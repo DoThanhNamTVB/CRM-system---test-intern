@@ -4,9 +4,9 @@ const TokenSchema = require('../models/token');
 
 const isAuthentication = async (req, res, next) => {
     //get token
-    const bearerToken = req.headers.authorization || req.body.token;
+    const bearerToken = req.headers?.authorization || req.body?.token;
     const accessToken = bearerToken?.split(' ')[1];
-    if (!accessToken) {
+    if (!bearerToken) {
         return res.status(401).json({
             message: 'User not authenticated'
         });
@@ -17,7 +17,7 @@ const isAuthentication = async (req, res, next) => {
         bearerToken: bearerToken
     });
 
-    if (checkWhiteList && checkWhiteList.isExpired === true) {
+    if (checkWhiteList && checkWhiteList?.isExpired === true) {
         return res
             .status(401)
             .json({ message: 'Access token unused , please login again' });
@@ -31,6 +31,7 @@ const isAuthentication = async (req, res, next) => {
             });
         }
 
+        console.log(user);
         req.user = user;
         next();
     });
@@ -40,11 +41,11 @@ const isAdmin = async (req, res, next) => {
     try {
         const { id } = req.user;
         const user = await admin.findById(id);
-        console.log(user);
         if (user && user?.role === 'Admin') {
             next();
+        } else {
+            return res.status(401).json({ message: 'You are not admin' });
         }
-        return res.status(401).json({ message: 'You are not admin' });
     } catch (error) {
         throw new Error(error);
     }
