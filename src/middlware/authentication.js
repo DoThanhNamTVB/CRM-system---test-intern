@@ -40,11 +40,10 @@ const isAdmin = async (req, res, next) => {
     try {
         const { _id } = req.user;
         const user = await admin.findById(_id);
-        if (user && user.role === true) {
+        if (user && user.role === 'Admin') {
             next();
-        } else if (user && user.role === false) {
-            return res.status(401).json('You are not admin');
         }
+        return res.status(401).json({ message: 'You are not admin' });
     } catch (error) {
         throw new Error(error);
     }
