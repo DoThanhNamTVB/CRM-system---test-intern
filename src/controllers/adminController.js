@@ -60,6 +60,10 @@ const login = asyncHandler(async (req, res) => {
                 message: 'Login successful',
                 token: token
             });
+        } else {
+            return res.status(400).json({
+                message: 'Email or password is not correct'
+            });
         }
     } catch (error) {
         throw new Error(error);

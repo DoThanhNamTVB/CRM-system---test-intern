@@ -38,9 +38,10 @@ const isAuthentication = async (req, res, next) => {
 
 const isAdmin = async (req, res, next) => {
     try {
-        const { _id } = req.user;
-        const user = await admin.findById(_id);
-        if (user && user.role === 'Admin') {
+        const { id } = req.user;
+        const user = await admin.findById(id);
+        console.log(user);
+        if (user && user?.role === 'Admin') {
             next();
         }
         return res.status(401).json({ message: 'You are not admin' });
