@@ -5,6 +5,7 @@ const TokenSchema = require('../models/token');
 const isAuthentication = async (req, res, next) => {
     //get token
     const bearerToken = req.headers?.authorization || req.body?.token;
+
     const accessToken = bearerToken?.split(' ')[1];
     if (!bearerToken) {
         return res.status(401).json({
@@ -14,7 +15,7 @@ const isAuthentication = async (req, res, next) => {
 
     //check token whitelist
     const checkWhiteList = await TokenSchema.findOne({
-        bearerToken: bearerToken
+        token: bearerToken
     });
 
     if (checkWhiteList && checkWhiteList?.isExpired === true) {
@@ -31,7 +32,6 @@ const isAuthentication = async (req, res, next) => {
             });
         }
 
-        console.log(user);
         req.user = user;
         next();
     });
